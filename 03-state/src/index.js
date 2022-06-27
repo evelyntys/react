@@ -4,9 +4,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+
+//creates react root component but you pass in the jsx you want it to render
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    {/* rendering app -> app function will run */}
     <App />
   </React.StrictMode>
 );
