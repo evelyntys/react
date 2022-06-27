@@ -15,8 +15,21 @@ export default class NumberBox extends React.Component{
         'count': this.props.initialValue
     }
     //when state changes, then it is redrawing itself
+
+    //ARROW FUNCTION
+    // ‘This’ in arrow function will always refer to the scope that it is created in -> fixed
+    //event handlers should ALWAYS be arrow functions
     click = () => {
-        alert('current count: ', this.state.count +=1)
+        //do not mututate (i.e. change) a state variable directly
+        // => this.state.count +=1; this.state.count++; this.state.count = this.state.count+1;
+        // => react unable to detect changes to the state
+        // => only on the next render will you see the change; you need to cause a re-render;
+
+        //correct way to update the state
+        //react can detect changes to the state via set state
+        this.setState({
+            'count': this.state.count + 1
+        })
     }
     //render () -> must have
     //whatever JSX is returned from render() function is its output
@@ -24,9 +37,11 @@ export default class NumberBox extends React.Component{
         return(
             <div onClick={this.click} style={{
                 'border': '1px solid black', 
+                'borderColor': this.state.count > 0? 'green' : 'red',
                 'padding': '10px',
                 'width': '20px',
-                'margin': '5px'
+                'margin': '5px',
+                'fontSize': `${this.state.count + 10}px`
             }}>{this.state.count}</div>
         )
     }
