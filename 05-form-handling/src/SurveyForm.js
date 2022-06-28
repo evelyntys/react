@@ -7,7 +7,8 @@ export default class SurveyForm extends React.Component{
         state = {
         'name': '',
         'email': '',
-        'colour': ''
+        'colour': '',
+        'country': 'singapore'
 
     }
 
@@ -29,6 +30,12 @@ export default class SurveyForm extends React.Component{
     updateColour = (event) => {
         this.setState({
             'colour': event.target.value
+        })
+    }
+
+    updateCountry = (event) => {
+        this.setState({
+            'country': event.target.value
         })
     }
 
@@ -54,6 +61,15 @@ export default class SurveyForm extends React.Component{
 
                     <input type='radio' onChange={this.updateColour} checked={this.state.colour === 'blue'} name='colours' value='blue' className='form-check-input'/>
                     <label className='form-check-label'>Blue</label>
+                </div>
+
+                <div>
+                    <label>country: </label>
+                    <select className='form-control' value={this.state.country} onChange={this.updateCountry}>
+                        <option value='singapore'>singapore</option>
+                        <option value='malaysia'>malaysia</option>
+                        <option value='indonesia'>indonesia</option>
+                    </select>
                 </div>
             </div>
         )
