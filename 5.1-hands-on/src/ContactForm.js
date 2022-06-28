@@ -10,7 +10,8 @@ export default class ContactForm extends React.Component {
         'firstName': '',
         'lastName': '',
         'type': '',
-        'country': ''
+        'country': '',
+        'contact': [],
     }
 
     updateFirstName = (e) => {
@@ -48,6 +49,24 @@ export default class ContactForm extends React.Component {
             Country: ${this.state.country}`
 
         )
+    }
+
+    updateContact = (event) => {
+        if (this.state.contact.includes(event.target.value)){
+            let indexToRemove = this.state.contact.indexOf(event.target.value);
+            let cloned = [...this.state.contact.slice(0, indexToRemove), ...this.state.contact.slice(indexToRemove + 1)]
+            this.setState({
+                'contact': cloned
+            })
+        }
+        else{
+            //this.state.contact.slice() -> returns a copy of the original array
+            let cloned = [...this.state.contact, event.target.value]
+            this.setState({
+                'contact': cloned
+            })
+        }
+        
     }
 
     render() {
@@ -89,7 +108,14 @@ export default class ContactForm extends React.Component {
                         <option value='indonesia'>indonesia</option>
                     </select>
                 </div>
-                <button className='btn btn-warning' onClick={this.buttonClick} disabled={!this.state.firstName || !this.state.lastName || !this.state.country || !this.state.type}>submit</button>
+
+                <div>
+                    <label>how would you like to be contacted: </label>
+                    <input type='checkbox' className='form-check-input' onChange={this.updateContact} checked={this.state.contact.includes('email')} name='contact' value='email'/>email
+                    <input type='checkbox' className='form-check-input' onChange={this.updateContact} checked={this.state.contact.includes('phone')} name='contact' value='phone'/>phone number
+                    <input type='checkbox' className='form-check-input' onChange={this.updateContact} checked={this.state.contact.includes('slow-')} name='contact' value='slow-mail'/>slow-mail
+                </div>
+                <button className='btn btn-warning' onClick={this.buttonClick} disabled={!this.state.firstName || !this.state.lastName || !this.state.country || !this.state.type || !this.state.contact}>submit</button>
             </div>
         )
     }

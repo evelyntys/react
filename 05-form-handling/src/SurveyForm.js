@@ -8,7 +8,9 @@ export default class SurveyForm extends React.Component{
         'name': '',
         'email': '',
         'colour': '',
-        'country': 'singapore'
+        'country': 'singapore',
+        'fruits': [],
+        'hasSubmitted': false
 
     }
 
@@ -39,6 +41,93 @@ export default class SurveyForm extends React.Component{
         })
     }
 
+    // updateFruitsStraightforward = (event) => {
+    //     //react community believes that values should be immutable; afraid of any problems being cascading
+    //     //this only applies to array
+
+    //     //1. clone the original array
+    //     let cloned = this.state.fruits.slice(); //no argument will slice from start to end
+
+    //     //2. update the cloned array
+    //     cloned.push(event.target.value)
+
+    //     //3. set the cloned array back into the state
+    //     // this.state.fruits.push(event.target.value)
+    //     this.setState({
+    //         'fruits': cloned
+    //     })
+    // }
+
+    //only if array is in the state, if not no need
+    updateFruits = (event) => {
+        //check if value is in the array i.e. check if checkbox has been checked
+        if (this.state.fruits.includes(event.target.value)){
+            // how to remove from an array
+            let indexToRemove= this.state.fruits.indexOf(event.target.value);
+            //spreading out the ones you want to remove, then joining everything together to become an array
+            let cloned = [...this.state.fruits.slice(0, indexToRemove), ...this.state.fruits.slice(indexToRemove+1)]
+            this.setState({
+                'fruits': cloned
+            })
+
+            // //1. clone the original array
+            // let cloned = this.state.fruits.slice();
+            // //2. remove from the clone
+            // let indexToRemove = -1;
+            // for (let i=0; i< this.state.fruits.length; i++){
+            //     if (this.state.fruits[i] === event.target.value){
+            //         indexToRemove = i;
+            //         break
+            //     }
+            // }
+            // cloned.splice(indexToRemove, 1);
+            // //3. replace the cloned array into the state
+            // this.setState({
+            //     'fruits': cloned
+            // })
+        }
+        else{
+            let cloned = [...this.state.fruits, event.target.value] //adding in new fruit at the back
+        //... spread operator -> copy all the items in an array and spread them out -> also works on objects
+        //let p = {'key':'value', author{'key': 'value'}} => let x = {...p} => console.log(p)
+        this.setState({
+            'fruits': cloned
+        })
+        }
+        //1. clone the original array
+        //2. update the cloned array
+    }
+
+    getNameError = () => {
+        if (this.state.name.length < 3){
+            return 'the name must have 3 more or characters'
+        }
+        else if (this.state.name.length > 20){
+            return 'the name must not exceed 20 characters'
+        }
+        else{
+            return null
+        }
+    }
+
+    getEmailError = () => {
+        if (!this.state.email.includes('@')){
+            return('please enter a valid email')
+        }
+        return null
+    }
+
+    submit =() => {
+        this.setState({
+            'hasSubmitted': true
+        })
+        //check if there is no error
+        if (!this.getNameError() && !this.getEmailError()){
+            alert('all data is ok')
+        }
+
+    }
+
     render(){
         return(
             <div>
@@ -46,9 +135,14 @@ export default class SurveyForm extends React.Component{
                     <label>Name: </label>
                     <input type='text' className='form-control' value={this.state.name}
                     onChange={this.updateName}/>
+                    {this.getNameError() && this.state.hasSubmitted ? <span className='error text-danger'>{this.getNameError()}</span> : ""}
+                    </div>
+
+                    <div>
                     <label>Email: </label>
                     <input type='email' className='form-control' value={this.state.email}
                     onChange={this.updateEmail}/>
+                    {this.getEmailError() && this.state.hasSubmitted? <span className='error'>{this.getEmailError()}</span> : ""}
                 </div>
                 <div>
                     <label>favourite color:</label>
@@ -71,6 +165,22 @@ export default class SurveyForm extends React.Component{
                         <option value='indonesia'>indonesia</option>
                     </select>
                 </div>
+
+                <div>
+                    <label>fruits: </label>
+                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='apple' checked={this.state.fruits.includes('apple')}/>
+                    <label className='form-check-label'>apple</label>
+
+                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='orange' checked={this.state.fruits.includes('orange')}/>
+                    <label className='form-check-label'>orange</label>
+
+                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='pineapple' checked={this.state.fruits.includes('pineapple')}/>
+                    <label className='form-check-label'>pineapple</label>
+
+                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='durian'  checked={this.state.fruits.includes('durian')}/>
+                    <label className='form-check-label'>durian</label>
+                </div>
+                <button onClick={this.submit}>submit</button>
             </div>
         )
     }
