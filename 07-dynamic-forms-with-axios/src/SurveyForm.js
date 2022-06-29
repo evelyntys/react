@@ -132,6 +132,23 @@ export default class SurveyForm extends React.Component {
         return options
     }
 
+    renderFruits(){
+        let options = [];
+        for (let f of this.state.allFruits){
+            options.push(
+                <React.Fragment>
+                <input type='checkbox' 
+                className='form-check-input' 
+                onChange={this.updateFruits} 
+                name='fruits' value={f.value}
+                checked={this.state.fruits.includes(f.value)} />
+                    <label className='form-check-label'>{f.display}</label>
+                    </React.Fragment>
+            )
+        }
+        return options
+    }
+
     render() {
         if (this.state.loaded){
         return (
@@ -158,23 +175,29 @@ export default class SurveyForm extends React.Component {
                 <div>
                     <label>country: </label>
                     <select className='form-control' value={this.state.country} onChange={this.updateCountry}>
-                        {this.country.map( c => <option value = {c.value}>{c.display}</option>)}
+                        {this.state.allCountries.map( c => <option value = {c.value}>{c.display}</option>)}
                     </select>
                 </div>
 
                 <div>
                     <label>fruits: </label>
-                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='apple' checked={this.state.allFruits.includes('apple')} />
+                    {/* {this.renderFruits()} */}
+                    {this.state.allFruits.map(f => 
+                        <React.Fragment key={f.value}>
+                             <input type="checkbox" onChange={this.updateFruits} className="form-check-input" name="fruits" value={f.value} />
+                                <label className="form-check-label">{f.display}</label>
+                        </React.Fragment>)}
+                    {/* <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='apple' checked={this.state.fruits.includes('apple')} />
                     <label className='form-check-label'>apple</label>
 
-                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='orange' checked={this.state.allFruits.includes('orange')} />
+                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='orange' checked={this.state.fruits.includes('orange')} />
                     <label className='form-check-label'>orange</label>
 
-                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='pineapple' checked={this.state.allFruits.includes('pineapple')} />
+                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='pineapple' checked={this.state.fruits.includes('pineapple')} />
                     <label className='form-check-label'>pineapple</label>
 
-                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='durian' checked={this.state.allFruits.includes('durian')} />
-                    <label className='form-check-label'>durian</label>
+                    <input type='checkbox' className='form-check-input' onChange={this.updateFruits} name='fruits' value='durian' checked={this.state.frutis.includes('durian')} />
+                    <label className='form-check-label'>durian</label> */}
                 </div>
                 <button onClick={this.submit}>submit</button>
             </div>
