@@ -33,7 +33,8 @@ export default class BudgetTracker extends React.Component {
         description: "",
         category: "transport",
         amount: 0,
-        reconciled: false
+        reconciled: false,
+        editingExpense: null
     }
 
     updateFormField = (event) => {
@@ -42,8 +43,8 @@ export default class BudgetTracker extends React.Component {
         })
     }
 
-    updateReconciled = (u) => {
-        let clonedE = { ...u, reconciled: !u.reconciled };
+    updateReconciled = (record) => {
+        let clonedE = { ...record, reconciled: !record.reconciled };
         let index = this.state.expenses.findIndex(function (t) {
             if (t._id === clonedE._id) {
                 return true;
@@ -77,6 +78,38 @@ export default class BudgetTracker extends React.Component {
         })
     }
 
+    displayExpenses = () => {
+        return (
+            <React.Fragment>
+                {this.state.expenses.map(e =>
+                    <div>
+                        <ul>
+                            <li>date: {e.date}</li>
+                            <li>description: {e.description}</li>
+                            <li>category: {e.category}</li>
+                            <li>amount: {e.amount}</li>
+                            <li>reconciled: <input type='checkbox'
+                                checked={e.reconciled}
+                                onChange={() => this.updateReconciled(e)} /></li>
+                        </ul>
+                        <button>edit</button>
+                        <button>delete</button>
+                    </div>)}
+            </React.Fragment>
+        )
+    }
+
+    displayEditExpenses = () => {
+        return (
+            <React.Fragment>
+                {this.state.expenses.map(e =>
+                    <div>
+
+                    </div>)}
+            </React.Fragment>
+        )
+    }
+
 
     render() {
         return (
@@ -84,14 +117,7 @@ export default class BudgetTracker extends React.Component {
                 <h1>expense tracker</h1>
                 <div>
                     <h2>view past expenses</h2>
-                    {this.state.expenses.map(e =>
-                        <ul>
-                            <li>date: {e.date}</li>
-                            <li>description: {e.description}</li>
-                            <li>category: {e.category}</li>
-                            <li>amount: {e.amount}</li>
-                            <li>reconciled: {e.reconciled}</li>
-                        </ul>)}
+                    {this.displayExpenses()}
                 </div>
                 <div>
                     <h2>adding a new expense</h2>
