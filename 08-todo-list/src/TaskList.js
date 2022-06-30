@@ -99,6 +99,7 @@ export default class TaskList extends React.Component {
             <li className='mt-3'>{task.description}
                 <input type='checkbox' className='form-check-input ms-3' checked={task.done} onChange={() => { this.updateTaskDone(task) }} />
                 <button className='ms-3 btn btn-primary btn-sm' onClick={() => { this.beginEditTask(task) }}>Edit</button>
+                <button className='ms-3 btn btn-danger btn-sm' onClick={() => { this.deleteTask(task) }}>Delete</button>
                 {/* can also put the entire function here since is just one line */}
             </li>
         )
@@ -143,11 +144,26 @@ export default class TaskList extends React.Component {
         })
     }
 
+    deleteTask = (task) => {
+        //find the index of the task that we want to delete
+        let index = this.state.tasks.findIndex(t => t._id === task._id);
+        //remove from the middle technique
+        const cloned = [
+            ...this.state.tasks.slice(0, index),
+            ...this.state.tasks.slice(index+1)
+        ]
+
+        this.setState({
+            tasks: cloned
+        })
+    }
+
     render() {
         return (
             <React.Fragment>
                 <h1>Todo List</h1>
                 {
+                    //map can take on 2 arguments, t and CurrentIndex
                     this.state.tasks.map(t => (
                         <React.Fragment key={t._id}>
 
