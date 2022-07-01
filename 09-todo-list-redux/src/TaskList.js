@@ -2,6 +2,7 @@ import React from 'react';
 import Task from './components/Task';
 import AddNewTask from './components/AddNewTask';
 import EditTask from './components/EditTask';
+import ConfirmDelete from './components/ConfirmDelete';
 
 export default class TaskList extends React.Component {
     state = {
@@ -24,7 +25,8 @@ export default class TaskList extends React.Component {
         ],
         newTaskDescription: "",
         modifiedTaskDescription: "",
-        taskBeingEdited: {}
+        taskBeingEdited: {},
+        taskBeingDeleted: {}
     }
 
     updateFormField = (event) => {
@@ -56,16 +58,18 @@ export default class TaskList extends React.Component {
     }
 
     updateTaskDone = (task) => {
-        const modifiedTask = {...task, 
-            done: !task.done //if task.done was true, it is now false} 
+    const modifiedTask = {
+        ...task, 
+        done: !task.done //if task.done was true, it is now false} 
     }
 
-    const index = this.state.tasks.findIndex(t => t._id === task._id)
+    const index = this.state.tasks.findIndex(t => t._id === task._id);
+
 
     let cloned = [
         ...this.state.tasks.slice(0, index),
         modifiedTask,
-        ...this.state.tasks(index+1)
+        ...this.state.tasks.slice(index+1)
     ]
     this.setState({
         tasks: cloned
@@ -98,6 +102,31 @@ processUpdate = () => {
     })
 }
 
+confirmation = (task) => {
+    this.setState({
+        taskBeingDeleted: task
+    })
+}
+
+delete = (task) => {
+    const index = this.state.tasks.findIndex(t => t._id === task._id);
+    const modified = [
+        ...this.state.tasks.slice(0, index), //get all the elements before the index to delete
+        ...this.state.tasks.slice(index+1) //get all the elements after the index to delete
+        //spread operator has less priority than slice -> will slice first before spreading
+    ]
+    this.setState({
+        tasks: modified,
+        taskBeingDeleted:{}
+    })
+}
+
+cancelDelete = () => {
+    this.setState({
+        taskBeingDeleted:{}
+    })
+}
+
     render() {
         return (
             <React.Fragment>
@@ -105,19 +134,28 @@ processUpdate = () => {
                 <ul className='list-group'>
                     {
                         this.state.tasks.map(t => {
-                            if (this.state.taskBeingEdited._id !== t._id){
-                            return <Task 
-                            task={t} 
-                            key={t._id} 
-                            updateTaskDone = {this.updateTaskDone}
-                            beginEdit = {this.beginEdit}
-                            />
+                            if (this.state.taskBeingDeleted._id === t._id){
+                                return <ConfirmDelete
+                                task={t}
+                                delete={this.delete}
+                                cancel={this.cancelDelete}/>
                             }
-                            else{
+                            else if (this.state.taskBeingEdited._id === t._id){
+                        
                                 return <EditTask key={t._id}
                                 modifiedDescription={this.state.modifiedTaskDescription}
                                 updateFormField={this.updateFormField}
                                 processUpdate={this.processUpdate}/> //mocking
+                            }
+                            else{
+                                return <Task 
+                                task={t} 
+                                key={t._id} 
+                                updateTaskDone = {this.updateTaskDone}
+                                beginEdit = {this.beginEdit}
+                                confirmDelete={this.confirmation}
+                                />
+                
                             }
                         }
 

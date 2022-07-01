@@ -8,8 +8,14 @@ export default function Task(props) {
                 <input type='checkbox' 
                 className='form-check-input' 
                 checked={props.task.done}
-                onChange={ () => {props.updateTaskDone(props.task)}}/>
+                onChange={ () => 
+                {props.updateTaskDone(props.task)
+                }}/>
             <button className='btn btn-primary btn-sm mx-2' onClick= {() => {props.beginEdit(props.task)}}>edit</button>
+            <button className='btn btn-danger btn-sm mx-2'
+            onClick={() =>{
+                props.confirmDelete(props.task)
+            }}>delete</button>
             </li>
 
         </React.Fragment >
