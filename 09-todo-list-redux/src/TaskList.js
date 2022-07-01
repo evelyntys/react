@@ -1,5 +1,7 @@
 import React from 'react';
 import Task from './components/Task';
+import AddNewTask from './components/AddNewTask';
+import EditTask from './components/EditTask';
 
 export default class TaskList extends React.Component {
     state = {
@@ -21,6 +23,8 @@ export default class TaskList extends React.Component {
             }
         ],
         newTaskDescription: "",
+        modifiedTaskDescription: "",
+        taskBeingEdited: {}
     }
 
     updateFormField = (event) => {
@@ -51,25 +55,79 @@ export default class TaskList extends React.Component {
         // })
     }
 
+    updateTaskDone = (task) => {
+        const modifiedTask = {...task, 
+            done: !task.done //if task.done was true, it is now false} 
+    }
+
+    const index = this.state.tasks.findIndex(t => t._id === task._id)
+
+    let cloned = [
+        ...this.state.tasks.slice(0, index),
+        modifiedTask,
+        ...this.state.tasks(index+1)
+    ]
+    this.setState({
+        tasks: cloned
+    })
+}
+
+beginEdit = (task) => {
+    this.setState({
+        taskBeingEdited: task,
+        modifiedTaskDescription: task.description
+    })
+}
+
+processUpdate = () => {
+    const modifiedTask = {
+        ...this.state.taskBeingEdited,
+        description: this.state.modifiedTaskDescription
+    }
+
+    const index = this.state.tasks.findIndex( t => t._id === modifiedTask._id);
+    //clone the array
+    const cloned = this.state.tasks.slice();
+
+    //starting at index (first argument), replace one element (second argument) with the modifiedTask (third argument)
+    cloned.splice(index, 1, modifiedTask);
+
+    this.setState({
+        tasks: cloned,
+        taskBeingEdited: {}
+    })
+}
+
     render() {
         return (
             <React.Fragment>
                 <h1>Task List</h1>
                 <ul className='list-group'>
                     {
-                        this.state.tasks.map(t => <Task task={t} key={t._id}/>
+                        this.state.tasks.map(t => {
+                            if (this.state.taskBeingEdited._id !== t._id){
+                            return <Task 
+                            task={t} 
+                            key={t._id} 
+                            updateTaskDone = {this.updateTaskDone}
+                            beginEdit = {this.beginEdit}
+                            />
+                            }
+                            else{
+                                return <EditTask key={t._id}
+                                modifiedDescription={this.state.modifiedTaskDescription}
+                                updateFormField={this.updateFormField}
+                                processUpdate={this.processUpdate}/> //mocking
+                            }
+                        }
+
                         )
 
                     }
                 </ul>
-
-                <h2>add new task</h2>
-                <div>
-                    <label>description: </label>
-                    <input type='text' value={this.state.newTaskDescription}
-                    name='newTaskDescription' onChange={this.updateFormField}/><br/>
-                    <button className='btn btn-primary mt-3 btn-sm' onClick={this.addTask}>add new task</button>
-                </div>
+                <AddNewTask newTaskDescription={this.state.newTaskDescription}
+                updateFormField={this.updateFormField}
+                addTask={this.addTask}/>
             </React.Fragment>
         )
     }
